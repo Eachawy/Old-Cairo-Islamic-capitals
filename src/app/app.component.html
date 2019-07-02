@@ -1,10 +1,11 @@
 <agm-map
-      [latitude]="latitude"
-      [longitude]="longitude"
+      [latitude]="coordinates.latitude"
+      [longitude]="coordinates.longitude"
       [zoom]="14"
       [mapTypeId]="mapType"
-      (mapClick)="addMarker($event.coords.lat, $event.coords.lng)"
     >
+
+
       <!-- <agm-marker
         *ngFor="let marker of markers"
         [latitude]="marker.lat"
@@ -14,6 +15,19 @@
         (markerClick)="selectMarker($event)"
       >
       </agm-marker> -->
+
+
+      <agm-direction [origin]="origin" [destination]="destination">
+      </agm-direction>
+
+
+
+
+      <agm-marker
+        [latitude]="coordinates.latitude"
+        [longitude]="coordinates.longitude"
+      >
+      </agm-marker>
 
       <agm-polygon 
           [paths]="wallOfSalahAlDin" 
@@ -32,7 +46,7 @@
           [longitude]="place.log" 
           [radius]="place.radius"
           [fillColor]="place.FColor"
-          (circleClick)="placeEvent($event)"
+          (circleClick)="placeEvent($event, place)"
       >
       </agm-circle>
 

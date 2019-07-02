@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LatLngLiteral } from '@agm/core';
+import { GeoLocationService } from './services/geo-location.service';
 
 @Component({
   selector: 'app-root',
@@ -21,11 +22,32 @@ export class AppComponent implements OnInit {
 
   wallOfSalahAlDin: Array<LatLngLiteral>;
   placesObj: any;
+  origin: any;
+  destination: any;
 
+  coordinates = {
+    latitude:  this.latitude,
+    longitude: this.longitude
+  };
 
-  constructor() {}
+  constructor(private LocationService: GeoLocationService) {}
 
   ngOnInit(): void {
+
+
+
+
+
+    this.LocationService.getPosition().subscribe(
+      (pos: Position) => {
+          this.coordinates = {
+            latitude:  (pos.coords.latitude - 0.0014), // pos.coords.latitude  30.035137
+            longitude: (0.0087 + pos.coords.longitude) // pos.coords.longitude  31.351685
+          };
+          this.origin = { lat: this.coordinates.latitude, lng: this.coordinates.longitude };
+          this.destination = { lat: 30.029751, lng: 31.262080 };
+      });
+
 
 
     this.wallOfSalahAlDin = [
@@ -51,24 +73,28 @@ export class AppComponent implements OnInit {
 
     this.placesObj = [
       {
+        id: 2,
         lat: 30.029751,
         log: 31.262080,
         radius: 450,
         FColor: 'red'
       },
       {
+        id: 3,
         lat: 30.028731,
         log: 31.249563,
         radius: 120,
         FColor: 'red'
       },
       {
+        id: 4,
         lat: 30.032267,
         log: 31.256192,
         radius: 94,
         FColor: 'red'
       },
       {
+        id: 5,
         lat: 30.032810,
         log: 31.257096,
         radius: 70,
@@ -80,8 +106,8 @@ export class AppComponent implements OnInit {
   }
 
 
-  placeEvent(event) {
-      console.log(event);
+  placeEvent(event, obj) {
+      console.log(obj);
   }
 
 
