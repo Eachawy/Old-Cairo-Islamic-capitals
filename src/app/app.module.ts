@@ -5,12 +5,14 @@ import { AgmCoreModule } from '@agm/core';
 import { AgmDirectionModule } from 'agm-direction';
 
 import { AppComponent } from './app.component';
-import { SettingComponent } from './setting/setting.component';
+import { GMapComponent } from './GMap/GMap.component';
+import { MapComponent } from './map/map.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SettingComponent
+    MapComponent,
+    GMapComponent
   ],
   imports: [
     BrowserModule,
