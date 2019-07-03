@@ -1,6 +1,13 @@
-<div class="settingView">
-  setting works!
+<div class="settingView" [ngClass]="{'openSetting': viewSetting}">
+  <button (click)="masjed()">Masjed</button>
+  <br>
+  <button (click)="wallOfSalahAlDin()">Wall of Salah al-Din</button>
+  <br>
+  <button (click)="direction()">Direction</button>
+  <span (click)="openSettingFn()"></span>
 </div>
+
+
 <app-gmap
   [latitude] = "latitude"
   [longitude] = "longitude"
@@ -13,7 +20,9 @@
   [FOpacity] = "FOpacity"
   [path] = "path"
   [placesObj] = "placesObj"
-  [origin] = "origin"
-  [destination] = "destination"
-
+  [directionData] = "directionObj"
+  [show] = "dirView"
+  [zoomMap] = "zoom"
 ></app-gmap>
+
+

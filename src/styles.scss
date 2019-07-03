@@ -1,3 +1,7 @@
+body{
+    overflow: hidden;
+}
+
 agm-map {
     position: absolute;
     top:0;
@@ -10,11 +14,28 @@ agm-map {
 
 .settingView {
     position: absolute;
-    background: red;
+    background: #fff;
     top: 0;
-    right: 0;
+    right: -540px;
     width: 500px;
     height: 500px;
     z-index: 9999;
-    display: none;
+    padding: 20px;
+    transition: all 0.5s; -webkit-transition: all 0.5s; -moz-transition: all 0.5s;
+}
+
+.settingView.openSetting {
+    right:0;
+}
+
+.settingView {
+    > span {
+        width: 100px;
+        height: 20px;
+        display: inline;
+        background: red;
+        position: absolute;
+        left: -100px;
+        cursor: pointer;
+    }
 }

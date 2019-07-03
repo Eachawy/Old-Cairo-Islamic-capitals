@@ -6,9 +6,9 @@ import { GeoLocationService } from '../services/geo-location.service';
     selector: 'app-gmap',
     template: `
         <agm-map
-            [latitude]="coordinates.latitude"
-            [longitude]="coordinates.longitude"
-            [zoom]="14"
+            [latitude]="latitude"
+            [longitude]="longitude"
+            [zoom]="zoomMap"
             [mapTypeId]="mapType"
         >
 
@@ -24,19 +24,26 @@ import { GeoLocationService } from '../services/geo-location.service';
             </agm-marker> -->
 
 
-            <agm-direction [origin]="origin" [destination]="destination">
+            <agm-direction
+                *ngIf="directionData"
+                [origin]="directionData.origin"
+                [destination]="directionData.destination"
+                [visible]="show"
+            >
             </agm-direction>
 
 
 
 
             <agm-marker
+                *ngIf="coordinates"
                 [latitude]="coordinates.latitude"
                 [longitude]="coordinates.longitude"
             >
             </agm-marker>
 
             <agm-polygon
+                *ngIf="path"
                 [paths]="path"
                 [fillColor]="Color"
                 [strokeColor]="SColor"
@@ -46,17 +53,17 @@ import { GeoLocationService } from '../services/geo-location.service';
             >
             </agm-polygon>
 
-
-            <agm-circle
-                *ngFor="let place of placesObj"
-                [latitude]="place.lat"
-                [longitude]="place.log"
-                [radius]="place.radius"
-                [fillColor]="place.FColor"
-                (circleClick)="placeEvent($event, place)"
-            >
-            </agm-circle>
-
+            <ng-container *ngIf="placesObj">
+                <agm-circle
+                    *ngFor="let place of placesObj"
+                    [latitude]="place.lat"
+                    [longitude]="place.log"
+                    [radius]="place.radius"
+                    [fillColor]="place.FColor"
+                    (circleClick)="placeEvent($event, place)"
+                >
+                </agm-circle>
+            </ng-container>
             <!-- <agm-data-layer [geoJson]="geoJsonObject" (layerClick)="clicked($event)" [style]="styleFunc">
             </agm-data-layer> -->
 
@@ -76,19 +83,22 @@ export class GMapComponent  implements OnInit {
     @Input() FOpacity: number;
     @Input() path: Array<LatLngLiteral>;
     @Input() placesObj: any;
-    @Input() origin: any;
-    @Input() destination: any;
+    @Input() directionData: any;
     @Input() coordinates: any;
+    @Input() show: boolean;
+    @Input() zoomMap: number;
 
 
-    constructor(private LocationService: GeoLocationService) {}
+    constructor() {}
 
     ngOnInit(): void {
+        if (this.coordinates) {
 
-        this.coordinates = {
-            latitude:  this.latitude,
-            longitude: this.longitude
-        };
+            this.coordinates = {
+                latitude:  this.latitude,
+                longitude: this.longitude
+            };
+        }
 
     }
 
