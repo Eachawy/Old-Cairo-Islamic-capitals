@@ -39,3 +39,22 @@ agm-map {
         cursor: pointer;
     }
 }
+
+.data {
+    display: block;
+    background:#eaeaea;
+    padding:10px;
+    color: red;
+    font-size: 13px;
+}
+
+.viewPanel {
+    position: absolute;
+    z-index: 99999;
+    background: #fff;
+    width: 300px;
+    height: 300px;
+    overflow: auto;
+    left: 0;
+    bottom: 0;
+}

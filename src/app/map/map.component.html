@@ -4,6 +4,16 @@
   <button (click)="wallOfSalahAlDin()">Wall of Salah al-Din</button>
   <br>
   <button (click)="direction()">Direction</button>
+  <br>
+  <button (click)="castleOfSalahAlDin()">Castle Of Salah Al-Din</button>
+  <br>
+  <button (click)="schools()">Schools</button>
+  <br>
+  <button (click)="changeTheme()">Change Theme Map</button>
+  <br>
+  <div class="data">
+    {{dataPlaceSelected}}
+  </div>
   <span (click)="openSettingFn()"></span>
 </div>
 
@@ -23,6 +33,8 @@
   [directionData] = "directionObj"
   [show] = "dirView"
   [zoomMap] = "zoom"
+  (selected) = "selectPlace($event)"
+  [mStyle] = "changeThemeStyle"
 ></app-gmap>
 
 

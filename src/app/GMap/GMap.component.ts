@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { LatLngLiteral } from '@agm/core';
-import { GeoLocationService } from '../services/geo-location.service';
+
+
 
 @Component({
     selector: 'app-gmap',
@@ -10,6 +11,7 @@ import { GeoLocationService } from '../services/geo-location.service';
             [longitude]="longitude"
             [zoom]="zoomMap"
             [mapTypeId]="mapType"
+            [styles]= "mStyle"
         >
 
 
@@ -29,18 +31,25 @@ import { GeoLocationService } from '../services/geo-location.service';
                 [origin]="directionData.origin"
                 [destination]="directionData.destination"
                 [visible]="show"
+                [panel]="myPanel"
+                [renderOptions]="renderOptions"
+                [markerOptions]="markerOptions"
             >
             </agm-direction>
 
 
 
+            <<ng-container *ngIf="placesObj">
+                <agm-marker
+                    *ngFor="let place of placesObj"
+                    [latitude]="place.lat"
+                    [longitude]="place.log"
+                    (markerClick)="placeEvent($event, place)"
+                    [iconUrl]= "mIcon"
+                >
+                </agm-marker>
+            </ng-container>
 
-            <agm-marker
-                *ngIf="coordinates"
-                [latitude]="coordinates.latitude"
-                [longitude]="coordinates.longitude"
-            >
-            </agm-marker>
 
             <agm-polygon
                 *ngIf="path"
@@ -68,6 +77,8 @@ import { GeoLocationService } from '../services/geo-location.service';
             </agm-data-layer> -->
 
         </agm-map>
+
+        <div class="viewPanel" #myPanel></div>
     `
 })
 
@@ -87,11 +98,32 @@ export class GMapComponent  implements OnInit {
     @Input() coordinates: any;
     @Input() show: boolean;
     @Input() zoomMap: number;
+    @Input() mStyle: any;
+    @Output() selected  = new EventEmitter<any>();
+
+    public mIcon: any;
+
+
+    public renderOptions = {
+        suppressMarkers: true,
+    };
+
+    public markerOptions = {
+        origin: {
+            icon: '../../assets/img/current.png'
+        },
+        destination: {
+            icon: '../../assets/img/goal.png'
+        },
+    };
 
 
     constructor() {}
 
     ngOnInit(): void {
+
+        this.mIcon = '../../assets/img/goal.png';
+
         if (this.coordinates) {
 
             this.coordinates = {
@@ -103,7 +135,7 @@ export class GMapComponent  implements OnInit {
     }
 
     placeEvent(event, obj) {
-        console.log(obj);
+        this.selected.emit(obj);
     }
 
     // geoJsonObject: Object = {
