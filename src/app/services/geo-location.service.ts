@@ -12,7 +12,7 @@ export class GeoLocationService {
     return Observable.create(
       (observer) => {
         if (navigator.geolocation) {
-            navigator.geolocation.watchPosition((pos: Position) => {
+            navigator.geolocation.getCurrentPosition((pos: Position) => {
               observer.next(pos);
             });
         }

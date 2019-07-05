@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LatLngLiteral } from '@agm/core';
 import { GeoLocationService } from '../services/geo-location.service';
+import { dataService } from '../services/data.services';
 
 @Component({
   selector: 'app-map',
@@ -8,31 +9,29 @@ import { GeoLocationService } from '../services/geo-location.service';
 })
 export class MapComponent implements OnInit {
 
-  latitude: number;
-  longitude: number;
-  mapType: string;  // satellite - hybrid - roadmap - terrain;
-  Color: string;
-  SColor: string;
-  SWeight: number;
-  SOpacity: number;
-  FOpacity: number;
-  path: Array<LatLngLiteral>;
-  placesObj: any;
-  directionObj: any;
-  coordinates: any;
-  dirView: boolean;
-  zoom: number;
+  public latitude: number;
+  public longitude: number;
+  public mapType: string;  // satellite - hybrid - roadmap - terrain;
+  public Color: string;
+  public SColor: string;
+  public SWeight: number;
+  public SOpacity: number;
+  public FOpacity: number;
+  public path: Array<LatLngLiteral>;
+  public placesObj: any;
+  public directionObj: any;
+  public coordinates: any;
+  public dirView: boolean;
+  public zoom: number;
+  public changeThemeStyle: any;
+  public dataPlaceSelected: any;
 
-  viewSetting = false;
-  dataPlaceSelected: string;
-
-  changeThemeStyle: any;
+  public viewSetting = false;
 
 
-  constructor(private LocationService: GeoLocationService) { }
+  constructor(private LocationService: GeoLocationService, private DService: dataService) { }
 
   ngOnInit() {
-
       this.latitude = 30.029240;
       this.longitude = 31.234178;
       this.mapType = 'roadmap';
@@ -41,117 +40,23 @@ export class MapComponent implements OnInit {
 
   masjed() {
     this.clearAction();
-
-    this.placesObj = [
-      {
-        id: 6,
-        lat: 30.054468,
-        log: 31.263696,
-        radius: 53,
-        FColor: 'red',
-        data: 'مسجد الحاكم بأمر الله'
-      },
-      {
-        id: 7,
-        lat: 30.052476,
-        log: 31.261873,
-        radius: 23,
-        FColor: 'red',
-        data: 'مسجد سليمان اغا السلحدار'
-      },
-      {
-        id: 8,
-        lat: 30.051515,
-        log: 31.262012,
-        radius: 23,
-        FColor: 'red',
-        data: 'مسجد الاقمر'
-      },
-      {
-        id: 3,
-        lat: 30.028731,
-        log: 31.249563,
-        radius: 120,
-        FColor: 'red',
-        data: 'مسجد احمد بن طولون'
-      },
-      {
-        id: 4,
-        lat: 30.032267,
-        log: 31.256192,
-        radius: 94,
-        FColor: 'red',
-        data: 'مدرسة ومسجد السلطان حسن'
-      },
-      {
-        id: 5,
-        lat: 30.032810,
-        log: 31.257096,
-        radius: 70,
-        FColor: 'red',
-        data: 'مسجد الرفاعى'
-      }
-    ];
+    this.DService.getMasjedData().subscribe( (res :any) => {
+        this.placesObj = res.body;
+    })
   }
 
   schools() {
     this.clearAction();
-    this.placesObj = [
-      {
-        id: 1,
-        lat: 30.049444,
-        log: 31.260746,
-        radius: 40,
-        FColor: 'blue',
-        data: 'مدرسة السلطان قلاوون'
-      },
-      {
-        id: 2,
-        lat: 30.049894,
-        log: 31.260832,
-        radius: 30,
-        FColor: 'blue',
-        data: 'مدرسة السلطان محمد بن قلاوون'
-      },
-      {
-        id: 3,
-        lat: 30.050122,
-        log: 31.260934,
-        radius: 30,
-        FColor: 'blue',
-        data: 'مدرسة السلطان الظاهر برقوق'
-      },
-      {
-        id: 4,
-        lat: 30.048966,
-        log: 31.261331,
-        radius: 10,
-        FColor: 'blue',
-        data: 'مدرسة وقبة السلطان الصالح نجم الدين ايوب'
-      },
-      {
-        id: 5,
-        lat: 30.047382,
-        log: 31.260065,
-        radius: 20,
-        FColor: 'blue',
-        data: 'مدرسة السلطان الاشرف برسباي'
-      }
-    ];
+    this.DService.getSchoolsData().subscribe((res: any) => {
+      this.placesObj = res.body;
+    });
   }
 
   castleOfSalahAlDin() {
     this.clearAction();
-    this.placesObj = [
-      {
-        id: 1,
-        lat: 30.029751,
-        log: 31.262080,
-        radius: 450,
-        FColor: 'red',
-        data: 'قلعة صلاح الدين الايوبي'
-      }
-    ];
+    this.DService.getCastlesData().subscribe( (res:any) => {
+        this.placesObj = res.body;
+    });
   }
 
   wallOfSalahAlDin() {
@@ -189,14 +94,19 @@ export class MapComponent implements OnInit {
     this.dirView = true;
     this.LocationService.getPosition().subscribe(
       (pos: Position) => {
+
+
           this.coordinates = {
-            latitude:  (pos.coords.latitude - 0.0014), // pos.coords.latitude  30.035137
-            longitude: (0.0087 + pos.coords.longitude) // pos.coords.longitude  31.351685
+            latitude:  +pos.coords.latitude, // pos.coords.latitude  30.035137  --0.0014
+            longitude: +pos.coords.longitude // pos.coords.longitude  31.351685 --0.0087 
           };
+
           this.directionObj = {
             origin : { lat: this.coordinates.latitude, lng: this.coordinates.longitude },
-            destination : { lat: 30.029751, lng: 31.262080 }
+            destination : { lat: this.dataPlaceSelected['lat'], lng: this.dataPlaceSelected['log'] }
           };
+
+
     });
   }
 
@@ -212,7 +122,7 @@ export class MapComponent implements OnInit {
   }
 
   selectPlace($event) {
-    this.dataPlaceSelected = $event.data;
+    this.dataPlaceSelected = $event;
   }
 
   changeTheme() {
